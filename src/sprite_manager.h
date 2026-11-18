@@ -139,10 +139,10 @@ public:
 
         // --- Vertex positions + UVs (interleaved sf::Vertex data) ---
         const auto vertexCount = static_cast<GLsizei>(mVertices.getVertexCount());
+        const auto vertexBytes =
+            static_cast<GLsizeiptr>(mVertices.getVertexCount() * sizeof(sf::Vertex));
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, mVerticesVBO));
-        glCheck(glBufferData(GL_ARRAY_BUFFER,
-                             static_cast<GLsizeiptr>(vertexCount * sizeof(sf::Vertex)),
-                             &mVertices[0], GL_DYNAMIC_DRAW));
+        glCheck(glBufferData(GL_ARRAY_BUFFER, vertexBytes, &mVertices[0], GL_DYNAMIC_DRAW));
         if (mPositionAttribLocation != -1) {
             glCheck(glVertexAttribPointer(
                 static_cast<GLuint>(mPositionAttribLocation), 2, GL_FLOAT, GL_FALSE,
@@ -152,7 +152,8 @@ public:
         if (mTexCoordsAttribLocation != -1) {
             glCheck(glVertexAttribPointer(
                 static_cast<GLuint>(mTexCoordsAttribLocation), 2, GL_FLOAT, GL_FALSE,
-                sizeof(sf::Vertex), reinterpret_cast<const void*>(offsetof(sf::Vertex, texCoords))));
+                sizeof(sf::Vertex),
+                reinterpret_cast<const void*>(offsetof(sf::Vertex, texCoords))));
             glCheck(glEnableVertexAttribArray(static_cast<GLuint>(mTexCoordsAttribLocation)));
         }
 
